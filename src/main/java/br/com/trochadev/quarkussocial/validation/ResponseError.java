@@ -1,11 +1,14 @@
 package br.com.trochadev.quarkussocial.validation;
 
+import lombok.Data;
+
 import javax.validation.ConstraintViolation;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Data
 public class ResponseError {
 
     public static final int UNPROCESSABLE_ENTITY_STATUS = 422;
@@ -24,22 +27,6 @@ public class ResponseError {
                 , violations.parallelStream()
                 .map(cv -> new FieldError(cv.getPropertyPath().toString(), cv.getMessage()))
                 .collect(Collectors.toList()));
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public Collection<FieldError> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(Collection<FieldError> errors) {
-        this.errors = errors;
     }
 
     public Response withStatusCode(int code){
