@@ -36,9 +36,9 @@ public class UserResource {
             Set<ConstraintViolation<UserDtoIn>> violations = validator.validate(dto);
 
             if (!violations.isEmpty()) {
-                return Response
-                        .status(Response.Status.BAD_REQUEST)
-                        .entity(ResponseError.createFromValidation(violations)).build();
+                return ResponseError
+                        .createFromValidation(violations)
+                        .withStatusCode(ResponseError.UNPROCESSABLE_ENTITY_STATUS);
             }
 
             User newUser = new User();
@@ -89,6 +89,7 @@ public class UserResource {
                 repo.delete(user);
             else
                 return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "Usuário não encontrado!").build();
+
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Erro interno!\n" + e.toString()).build();
