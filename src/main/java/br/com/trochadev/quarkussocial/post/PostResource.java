@@ -115,11 +115,14 @@ public class PostResource {
     public Response deletePost(@PathParam("userId") Long userId, @PathParam("postId") Long postId) {
         try {
             User user = userRepo.findById(userId);
-
             if (user == null)
                 return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "Usuário não encontrado!").build();
 
-            repo.delete("user = :user and id = :id", Parameters.with("user", user).and("id", postId));
+            Post post = repo.find("user = :user and id = :id", Parameters.with("user", user).and("id", postId)).firstResult();
+            if (post == null)
+                return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "Post não encontrado!").build();
+
+            repo.delete(post);
 
             return Response.status(Response.Status.NO_CONTENT.getStatusCode(), "Post deletado com sucesso!").build();
 
