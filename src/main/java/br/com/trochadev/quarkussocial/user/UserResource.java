@@ -35,11 +35,10 @@ public class UserResource {
         try {
             Set<ConstraintViolation<UserDtoIn>> violations = validator.validate(dto);
 
-            if (!violations.isEmpty()) {
+            if (!violations.isEmpty())
                 return ResponseError
                         .createFromValidation(violations)
                         .withStatusCode(ResponseError.UNPROCESSABLE_ENTITY_STATUS);
-            }
 
             User newUser = new User();
             newUser.setName(dto.getName());
@@ -67,6 +66,13 @@ public class UserResource {
     @Path("{id}")
     @Transactional
     public Response updateUser(@PathParam("id") Long id, UserDtoIn dto) {
+        Set<ConstraintViolation<UserDtoIn>> violations = validator.validate(dto);
+
+        if (!violations.isEmpty())
+            return ResponseError
+                    .createFromValidation(violations)
+                    .withStatusCode(ResponseError.UNPROCESSABLE_ENTITY_STATUS);
+
         User user = repo.findById(id);
 
         if (user != null) {
