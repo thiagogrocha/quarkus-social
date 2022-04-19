@@ -40,17 +40,12 @@ public class UserResource {
                         .createFromValidation(violations)
                         .withStatusCode(ResponseError.UNPROCESSABLE_ENTITY_STATUS);
 
-            User newUser = new User();
-            newUser.setName(dto.getName());
-            newUser.setAge(dto.getAge());
+            User newUser = new User(dto.getName(), dto.getAge());
 
             repo.persist(newUser);
 
-            return Response.created(
-                            UriBuilder.fromResource(UserResource.class)
-                                    .path(newUser.getId().toString())
-                                    .build())
-                    .build();
+            return Response.created(UriBuilder.fromResource(UserResource.class).path(newUser.getId().toString()).build()).build();
+
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_ACCEPTABLE.getStatusCode(), e.getMessage()).build();
@@ -59,49 +54,61 @@ public class UserResource {
 
     @GET
     public Response getAllUsers() {
-        return Response.ok(repo.findAll().list()).build();
-    }
-
-    @PUT
-    @Path("{id}")
-    @Transactional
-    public Response updateUser(@PathParam("id") Long id, UserDtoIn dto) {
-        Set<ConstraintViolation<UserDtoIn>> violations = validator.validate(dto);
-
-        if (!violations.isEmpty())
-            return ResponseError
-                    .createFromValidation(violations)
-                    .withStatusCode(ResponseError.UNPROCESSABLE_ENTITY_STATUS);
-
-        User user = repo.findById(id);
-
-        if (user != null) {
-            user.setAge(dto.getAge());
-            user.setName(dto.getName());
-
-        } else
-            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "Usuário não encontrado!").build();
-
-        return Response.status(Response.Status.OK.getStatusCode(), "Usuário atualizado com sucesso!").build();
-    }
-
-    @DELETE
-    @Path("{id}")
-    @Transactional
-    public Response deleteUser(@PathParam("id") Long id) {
-        User user = repo.findById(id);
         try {
-            if (user != null)
-                repo.delete(user);
-            else
-                return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "Usuário não encontrado!").build();
+            return Response.ok(repo.findAll().list()).build();
 
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Erro interno!\n" + e.toString()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Erro interno!\n" + e).build();
         }
-        return Response.status(Response.Status.NO_CONTENT.getStatusCode(), "Usuário deletado com sucesso!").build();
     }
 
+    @PUT
+    @Path("{userId}")
+    @Transactional
+    public Response updateUser(@PathParam("userId") Long id, UserDtoIn dto) {
+        try {
+            Set<ConstraintViolation<UserDtoIn>> violations = validator.validate(dto);
+
+            if (!violations.isEmpty())
+                return ResponseError
+                        .createFromValidation(violations)
+                        .withStatusCode(ResponseError.UNPROCESSABLE_ENTITY_STATUS);
+
+            User user = repo.findById(id);
+
+            if (user == null)
+                return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "Usuário não encontrado!").build();
+
+            user.setAge(dto.getAge());
+            user.setName(dto.getName());
+
+            return Response.status(Response.Status.OK.getStatusCode(), "Usuário atualizado com sucesso!").build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Erro interno!\n" + e).build();
+        }
+    }
+
+    @DELETE
+    @Path("{userId}")
+    @Transactional
+    public Response deleteUser(@PathParam("userId") Long id) {
+        try {
+            User user = repo.findById(id);
+
+            if (user == null)
+                return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "Usuário não encontrado!").build();
+
+            repo.delete(user);
+
+            return Response.status(Response.Status.NO_CONTENT.getStatusCode(), "Usuário deletado com sucesso!").build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Erro interno!\n" + e).build();
+        }
+    }
 
 }
