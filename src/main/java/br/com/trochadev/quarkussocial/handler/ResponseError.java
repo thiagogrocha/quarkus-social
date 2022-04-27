@@ -1,4 +1,4 @@
-package br.com.trochadev.quarkussocial.validation;
+package br.com.trochadev.quarkussocial.handler;
 
 import lombok.Data;
 
@@ -23,8 +23,8 @@ public class ResponseError {
 
     public static <T> ResponseError createFromValidation(Set<ConstraintViolation<T>> violations) {
 
-        return new ResponseError("Validation Error"
-                , violations.parallelStream()
+        return new ResponseError("Validation Error",
+                violations.parallelStream()
                 .map(cv -> new FieldError(cv.getPropertyPath().toString(), cv.getMessage()))
                 .collect(Collectors.toList()));
     }
