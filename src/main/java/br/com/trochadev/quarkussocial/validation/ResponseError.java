@@ -1,4 +1,4 @@
-package br.com.trochadev.quarkussocial.handler;
+package br.com.trochadev.quarkussocial.validation;
 
 import lombok.Data;
 
