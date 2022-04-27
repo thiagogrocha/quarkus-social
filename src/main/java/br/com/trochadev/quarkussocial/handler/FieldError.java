@@ -1,4 +1,4 @@
-package br.com.trochadev.quarkussocial.validation;
+package br.com.trochadev.quarkussocial.handler;
 
 public class FieldError {
     private String field;
