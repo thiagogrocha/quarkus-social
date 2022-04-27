@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private UserRepository userRepo;
-    private PostRepository repo;
+    private PostRepository postRepo;
     private Validator validator;
 
     @Inject
-    public PostService(PostRepository repo, UserRepository userRepo, Validator validator) {
-        this.repo = repo;
+    public PostService(PostRepository postRepo, UserRepository userRepo, Validator validator) {
+        this.postRepo = postRepo;
         this.userRepo = userRepo;
         this.validator = validator;
     }
@@ -47,7 +47,7 @@ public class PostService {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).entity(new ResponseMsg("Usuário não encontrado!")).build();
 
         PostEntity newPost = new PostEntity(user, dto.getText());
-        repo.persist(newPost);
+        postRepo.persist(newPost);
 
         return Response.created(UriBuilder.fromResource(UserResource.class).path(userId.toString()).path("posts").path(newPost.getId().toString()).build()).build();
     }
@@ -58,7 +58,7 @@ public class PostService {
         if (user == null)
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).entity(new ResponseMsg("Usuário não encontrado!")).build();
 
-        return Response.ok(repo.find("user", Sort.by("dateTime", Sort.Direction.Descending), user)
+        return Response.ok(postRepo.find("user", Sort.by("dateTime", Sort.Direction.Descending), user)
                 .stream()
                 .map(PostDtoOut::fromEntity)
                 .collect(Collectors.toList())).build();
@@ -76,7 +76,7 @@ public class PostService {
         if (user == null)
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).entity(new ResponseMsg("Usuário não encontrado!")).build();
 
-        PostEntity postEntity = repo.find("user = :user and id = :id", Parameters.with("user", user).and("id", postId)).firstResult();
+        PostEntity postEntity = postRepo.find("user = :user and id = :id", Parameters.with("user", user).and("id", postId)).firstResult();
         if (postEntity == null)
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).entity(new ResponseMsg("Post não encontrado!")).build();
 
@@ -90,11 +90,11 @@ public class PostService {
         if (user == null)
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).entity(new ResponseMsg("Usuário não encontrado!")).build();
 
-        PostEntity postEntity = repo.find("user = :user and id = :id", Parameters.with("user", user).and("id", postId)).firstResult();
+        PostEntity postEntity = postRepo.find("user = :user and id = :id", Parameters.with("user", user).and("id", postId)).firstResult();
         if (postEntity == null)
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).entity(new ResponseMsg("Post não encontrado!")).build();
 
-        repo.delete(postEntity);
+        postRepo.delete(postEntity);
 
         return Response.status(Response.Status.NO_CONTENT.getStatusCode()).entity(new ResponseMsg("Post deletado!")).build();
     }
