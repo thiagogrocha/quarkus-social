@@ -1,10 +1,10 @@
 package br.com.trochadev.quarkussocial.post;
 
-import br.com.trochadev.quarkussocial.handler.ResponseMsg;
+import br.com.trochadev.quarkussocial.validation.ResponseMsg;
 import br.com.trochadev.quarkussocial.user.UserResource;
 import br.com.trochadev.quarkussocial.user.entity.User;
 import br.com.trochadev.quarkussocial.user.entity.UserRepository;
-import br.com.trochadev.quarkussocial.handler.ResponseError;
+import br.com.trochadev.quarkussocial.validation.ResponseError;
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 
