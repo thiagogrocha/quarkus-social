@@ -1,4 +1,4 @@
-package br.com.trochadev.quarkussocial.post.entity;
+package br.com.trochadev.quarkussocial.post;
 
 import br.com.trochadev.quarkussocial.user.entity.User;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "posts")
 @SequenceGenerator(name = "PostsSeq", sequenceName = "posts_seq", allocationSize = 1)
-public class Post {
+public class PostEntity {
 
     @Id
     @GeneratedValue(generator = "PostsSeq", strategy = GenerationType.SEQUENCE)
@@ -26,10 +26,10 @@ public class Post {
     @JoinColumn(name = "userid")
     private User user;
 
-    public Post() {
+    public PostEntity() {
     }
 
-    public Post(User user, String text) {
+    public PostEntity(User user, String text) {
         this.user = user;
         this.text = text;
     }

@@ -1,6 +1,5 @@
-package br.com.trochadev.quarkussocial.post.dto;
+package br.com.trochadev.quarkussocial.post;
 
-import br.com.trochadev.quarkussocial.post.entity.Post;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -20,7 +19,7 @@ public class PostDtoOut {
         this.dateTime = dateTime;
     }
 
-    public static PostDtoOut fromEntity(Post post) {
-        return new PostDtoOut(post.getId(), post.getText(), post.getDateTime());
+    public static PostDtoOut fromEntity(PostEntity postEntity) {
+        return new PostDtoOut(postEntity.getId(), postEntity.getText(), postEntity.getDateTime());
     }
 }
